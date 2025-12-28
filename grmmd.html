@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grande Auto Peças</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primaria:#120a1a;
+  --secundaria:#6b2de0;
+  --fundo:#0a0a0a;
+  --card:#1a1a1a;
+  --texto:#f5f5f5;
+  --texto-sec:#b0b0b0;
+  --novo:#00ffcc;
+  --promocao:#ff2d95;
+}
+
+body{margin:0;font-family:'Montserrat',sans-serif;background:var(--fundo);color:var(--texto);scroll-behavior:smooth;}
+header{background:var(--primaria);padding:15px 25px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 3px 10px rgba(0,0,0,0.5);}
+.logo{display:flex;align-items:center;gap:15px;position:relative;}
+.logo h1{font-weight:800;letter-spacing:1px;margin:0;font-family:'Roboto Slab', serif; background: linear-gradient(90deg,#6b2de0,#ff2d95,#00ffcc,#6b2de0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: neonGlow 3s linear infinite;}
+.logo svg{width:50px;height:50px;animation:logoRotate 6s linear infinite;}
+.search-box{display:flex;align-items:center;background:var(--card);border-radius:25px;padding:5px 10px;box-shadow:0 2px 10px rgba(0,0,0,0.5);}
+.search-box input{border:none;background:none;color:#fff;padding:5px 10px;border-radius:20px;outline:none;width:200px;}
+.search-box button{background:none;border:none;color:var(--secundaria);cursor:pointer;font-size:18px;}
+.container{display:flex;max-width:1300px;margin:20px auto;padding:0 20px;gap:20px;}
+.sidebar{width:200px;background:var(--card);padding:15px;border-radius:15px;box-shadow:0 3px 10px rgba(0,0,0,0.5);}
+.sidebar h3{color:var(--secundaria);margin-top:0;margin-bottom:10px;}
+.sidebar ul{list-style:none;padding-left:0;}
+.sidebar ul li{padding:8px 0;cursor:pointer;color:var(--texto-sec);}
+.sidebar ul li:hover{color:var(--secundaria);font-weight:600;}
+.main-content{flex:1;}
+.produtos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:25px;perspective:1000px;}
+.card{background:var(--card);border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,0.5);transform-style:preserve-3d;transition: transform 0.6s, box-shadow 0.3s;opacity:0;transform:translateY(30px);cursor:pointer;position:relative;height:300px;}
+.card:hover{transform:translateY(-6px) rotateY(180deg);box-shadow:0 10px 25px rgba(107,45,224,0.5);}
+.card-inner{position:absolute;width:100%;height:100%;transition:transform 0.6s;transform-style:preserve-3d;}
+.card-front, .card-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;text-align:center;}
+.card-front .icone-cat{width:25px;height:25px;margin-bottom:8px;font-size:25px;}
+.card-front h3{margin:10px 0 5px;font-size:16px;}
+.card-front .preco{color:var(--secundaria);font-weight:bold;font-size:15px;}
+.card-front .compatibilidade{font-size:12px;color:var(--texto-sec);}
+.card-back{background:var(--primaria);color:#fff;transform:rotateY(180deg);font-size:14px;padding:15px;display:flex;align-items:center;justify-content:center;line-height:1.3;}
+.tooltip{position:relative;display:inline-block;}
+.tooltip .tooltiptext{visibility:hidden;width:200px;background-color:var(--primaria);color:#fff;text-align:center;padding:8px;border-radius:6px;position:absolute;z-index:1;bottom:110%;left:50%;transform:translateX(-50%);opacity:0;transition:opacity 0.3s;font-size:12px;}
+.tooltip:hover .tooltiptext{visibility:visible;opacity:1;}
+button{width:100%;padding:12px;border:none;border-radius:8px;background:var(--secundaria);color:var(--texto);cursor:pointer;font-weight:700;font-size:14px;transition:0.3s;margin-top:12px;}
+button:hover{background:linear-gradient(45deg,#6b2de0,#4a00e0);transform:scale(1.03);}
+.badge{position:absolute;top:10px;left:10px;padding:5px 10px;border-radius:6px;color:#fff;font-size:12px;font-weight:bold;}
+.badge.novo{background:var(--novo);}
+.badge.promocao{background:var(--promocao);}
+.modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.85);justify-content:center;align-items:center;}
+.modal-content{background:var(--card);padding:25px;border-radius:15px;max-width:500px;width:90%;text-align:left;position:relative;}
+.modal-content h3{color:var(--secundaria);}
+.modal-content p{margin-top:10px;color:#ddd;}
+.close{position:absolute;top:10px;right:15px;font-size:22px;color:var(--secundaria);cursor:pointer;font-weight:bold;}
+.sac-fixo{position:fixed;bottom:20px;right:20px;background:var(--secundaria);color:#fff;padding:15px 20px;border-radius:50px;box-shadow:0 4px 15px rgba(0,0,0,0.5);font-weight:700;cursor:pointer;z-index:100;transition:0.3s;}
+.sac-fixo:hover{background:linear-gradient(45deg,#6b2de0,#4a00e0);}
+.carrinho-fixo{position:fixed;top:100px;right:20px;width:300px;background:var(--card);padding:20px;border-radius:15px;box-shadow:0 4px 15px rgba(0,0,0,0.5);z-index:90;}
+.carrinho-fixo h2{margin-top:0;}
+.carrinho-fixo ul{list-style:none;padding-left:0;max-height:300px;overflow-y:auto;margin-bottom:10px;}
+.carrinho-fixo button{width:100%;}
+.categoria-title{margin-top:30px;margin-bottom:10px;font-size:18px;color:var(--secundaria);border-bottom:1px solid var(--secundaria);padding-bottom:5px;}
+@keyframes logoRotate{0%{transform:rotate(0deg);}50%{transform:rotate(5deg) scale(1.05);}100%{transform:rotate(0deg);} }
+@keyframes fadeInUp{to {opacity:1; transform:translateY(0);}}
+@keyframes neonGlow{0%,100%{background-position:0 0;}50%{background-position:200% 0;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="48" fill="#6b2de0"/>
+      <circle cx="50" cy="50" r="40" fill="#120a1a"/>
+      <text x="50" y="62" text-anchor="middle" font-size="42" fill="#6b2de0" font-weight="bold">G</text>
+    </svg>
+    <h1>GRANDE <span>AUTO PEÇAS</span></h1>
+  </div>
+  <div class="search-box">
+    <input type="text" id="search" placeholder="Pesquisar produto...">
+    <button onclick="pesquisar()">🔍</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="sidebar">
+    <h3>Categorias</h3>
+    <ul id="categorias-lista"></ul>
+  </div>
+  <div class="main-content">
+    <div id="produtos-container"></div>
+  </div>
+
+  <div class="carrinho-fixo">
+    <h2>🛒 Carrinho</h2>
+    <ul id="lista"></ul>
+    <p><strong>Total:</strong> R$ <span id="total">0.00</span></p>
+    <button onclick="finalizar()">Finalizar Compra</button>
+  </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="close" onclick="fecharModal()">&times;</span>
+    <h3 id="modal-title"></h3>
+    <p id="modal-text"></p>
+  </div>
+</div>
+
+<div class="sac-fixo" onclick="window.open('https://wa.me/5531993365096','_blank')">
+  SAC WhatsApp
+</div>
+
+<script>
+let carrinho=[], total=0;
+
+let produtos=[
+  // 40 produtos de motos
+  {id:1,nome:"Filtro de Óleo Moto",preco:55,compat:["Honda CG","Yamaha YBR"],icone:"🛢️",info:"Filtro de óleo de alta eficiência.",categoria:"Filtros",badge:"novo"},
+  {id:2,nome:"Velas de Ignição",preco:35,compat:["Honda CG","Yamaha YBR"],icone:"⚡",info:"Velas de alto desempenho.",categoria:"Motor"},
+  {id:3,nome:"Pastilha de Freio Dianteira",preco:70,compat:["Honda CG","Yamaha YBR"],icone:"🛑",info:"Pastilhas que garantem frenagem segura.",categoria:"Freios"},
+  {id:4,nome:"Óleo de Motor 1L",preco:30,compat:["Honda CG","Yamaha YBR"],icone:"🛢️",info:"Óleo lubrificante sintético.",categoria:"Óleo"},
+  {id:5,nome:"Bateria Moto",preco:180,compat:["Honda CG","Yamaha YBR"],icone:"🔋",info:"Bateria durável para sua moto.",categoria:"Elétrico"},
+  {id:6,nome:"Corrente de Transmissão",preco:90,compat:["Honda CG","Yamaha YBR"],icone:"⛓️",info:"Corrente de alta resistência.",categoria:"Transmissão"},
+  {id:7,nome:"Amortecedor Dianteiro",preco:250,compat:["Honda CG","Yamaha YBR"],icone:"🛠️",info:"Amortecedor ajustável e resistente.",categoria:"Suspensão"},
+  {id:8,nome:"Pneu Dianteiro 90/90",preco:220,compat:["Honda CG","Yamaha YBR"],icone:"🛞",info:"Pneu de alta aderência.",categoria:"Pneus"},
+  {id:9,nome:"Pneu Traseiro 120/80",preco:260,compat:["Honda CG","Yamaha YBR"],icone:"🛞",info:"Pneu resistente e seguro.",categoria:"Pneus"},
+  {id:10,nome:"Espelho Retrovisor",preco:45,compat:["Honda CG","Yamaha YBR"],icone:"🔍",info:"Espelho retrovisor ajustável.",categoria:"Acessórios"},
+  {id:11,nome:"Farol Dianteiro LED",preco:180,compat:["Honda CG","Yamaha YBR"],icone:"💡",info:"Farol potente e durável.",categoria:"Iluminação"},
+  {id:12,nome:"Lanterna Traseira",preco:90,compat:["Honda CG","Yamaha YBR"],icone:"🔴",info:"Lanterna traseira com LED.",categoria:"Iluminação"},
+  {id:13,nome:"Filtro de Ar Moto",preco:60,compat:["Honda CG","Yamaha YBR"],icone:"🌬️",info:"Filtro de ar eficiente.",categoria:"Filtros"},
+  {id:14,nome:"Suporte de Placa",preco:35,compat:["Honda CG","Yamaha YBR"],icone:"🪧",info:"Suporte para placa.",categoria:"Acessórios"},
+  {id:15,nome:"Buzina",preco:40,compat:["Honda CG","Yamaha YBR"],icone:"📢",info:"Buzina potente.",categoria:"Elétrico"},
+  {id:16,nome:"Manete de Freio",preco:50,compat:["Honda CG","Yamaha YBR"],icone:"✋",info:"Manete ajustável e resistente.",categoria:"Freios"},
+  {id:17,nome:"Manete de Embreagem",preco:55,compat:["Honda CG","Yamaha YBR"],icone:"✋",info:"Manete de embreagem ergonômico.",categoria:"Freios"},
+  {id:18,nome:"Pastilha de Freio Traseira",preco:75,compat:["Honda CG","Yamaha YBR"],icone:"🛑",info:"Garantia de frenagem segura.",categoria:"Freios"},
+  {id:19,nome:"Cabo de Embreagem",preco:35,compat:["Honda CG","Yamaha YBR"],icone:"🧵",info:"Cabo resistente e durável.",categoria:"Transmissão"},
+  {id:20,nome:"Cabo de Acelerador",preco:30,compat:["Honda CG","Yamaha YBR"],icone:"🧵",info:"Cabo preciso para aceleração.",categoria:"Motor"},
+  {id:21,nome:"Filtro de Combustível",preco:45,compat:["Honda CG","Yamaha YBR"],icone:"🛢️",info:"Filtro que protege o motor.",categoria:"Filtros"},
+  {id:22,nome:"Pastilha de Freio Dianteira",preco:80,compat:["Honda CG","Yamaha YBR"],icone:"🛑",info:"Pastilha dianteira de qualidade.",categoria:"Freios"},
+  {id:23,nome:"Correia de Transmissão",preco:100,compat:["Honda CG","Yamaha YBR"],icone:"⛓️",info:"Correia durável e confiável.",categoria:"Transmissão"},
+  {id:24,nome:"Filtro de Óleo Sintético",preco:65,compat:["Honda CG","Yamaha YBR"],icone:"🛢️",info:"Filtro de óleo sintético premium.",categoria:"Filtros"},
+  {id:25,nome:"Velas de Ignição Premium",preco:50,compat:["Honda CG","Yamaha YBR"],icone:"⚡",info:"Velas para alto desempenho.",categoria:"Motor"},
+  {id:26,nome:"Bateria Selada",preco:200,compat:["Honda CG","Yamaha YBR"],icone:"🔋",info:"Bateria sem manutenção.",categoria:"Elétrico"},
+  {id:27,nome:"Pneu Dianteiro 100/90",preco:240,compat:["Honda CG","Yamaha YBR"],icone:"🛞",info:"Pneu dianteiro resistente.",categoria:"Pneus"},
+  {id:28,nome:"Pneu Traseiro 130/90",preco:280,compat:["Honda CG","Yamaha YBR"],icone:"🛞",info:"Pneu traseiro durável.",categoria:"Pneus"},
+  {id:29,nome:"Farol Neblina",preco:150,compat:["Honda CG","Yamaha YBR"],icone:"💡",info:"Farol auxiliar de LED.",categoria:"Iluminação"},
+  {id:30,nome:"Interruptor de Luz",preco:40,compat:["Honda CG","Yamaha YBR"],icone:"🔌",info:"Interruptor confiável.",categoria:"Elétrico"},
+  {id:31,nome:"Amortecedor Traseiro",preco:260,compat:["Honda CG","Yamaha YBR"],icone:"🛠️",info:"Amortecedor traseiro ajustável.",categoria:"Suspensão"},
+  {id:32,nome:"Guarda-lamas Dianteiro",preco:70,compat:["Honda CG","Yamaha YBR"],icone:"🛡️",info:"Proteção contra respingos.",categoria:"Acessórios"},
+  {id:33,nome:"Guarda-lamas Traseiro",preco:75,compat:["Honda CG","Yamaha YBR"],icone:"🛡️",info:"Proteção traseira durável.",categoria:"Acessórios"},
+  {id:34,nome:"Espelho Retrovisor Direito",preco:50,compat:["Honda CG","Yamaha YBR"],icone:"🔍",info:"Espelho lateral direito.",categoria:"Acessórios"},
+  {id:35,nome:"Espelho Retrovisor Esquerdo",preco:50,compat:["Honda CG","Yamaha YBR"],icone:"🔍",info:"Espelho lateral esquerdo.",categoria:"Acessórios"},
+  {id:36,nome:"Protetor de Corrente",preco:60,compat:["Honda CG","Yamaha YBR"],icone:"🛡️",info:"Protege a corrente da moto.",categoria:"Transmissão"},
+  {id:37,nome:"Filtro de Ar Esportivo",preco:80,compat:["Honda CG","Yamaha YBR"],icone:"🌬️",info:"Filtro esportivo de alto fluxo.",categoria:"Filtros"},
+  {id:38,nome:"Carenagem Frontal",preco:150,compat:["Honda CG","Yamaha YBR"],icone:"🛡️",info:"Carenagem estética e resistente.",categoria:"Acessórios"},
+  {id:39,nome:"Carenagem Lateral",preco:140,compat:["Honda CG","Yamaha YBR"],icone:"🛡️",info:"Proteção lateral da moto.",categoria:"Acessórios"},
+  {id:40,nome:"Kit Relação Completo",preco:200,compat:["Honda CG","Yamaha YBR"],icone:"⛓️",info:"Kit com corrente, coroa e pinhão.",categoria:"Transmissão"},
+  
+  // 40 produtos de carros
+  {id:41,nome:"Filtro de Óleo Carro",preco:70,compat:["Fiat Uno","Chevrolet Onix"],icone:"🛢️",info:"Filtro de óleo confiável para carros.",categoria:"Filtros",badge:"novo"},
+  {id:42,nome:"Velas de Ignição Carro",preco:50,compat:["Fiat Uno","Chevrolet Onix"],icone:"⚡",info:"Velas de alta durabilidade.",categoria:"Motor"},
+  {id:43,nome:"Pastilha de Freio Dianteira Carro",preco:120,compat:["Fiat Uno","Chevrolet Onix"],icone:"🛑",info:"Pastilhas dianteiras de qualidade.",categoria:"Freios"},
+  {id:44,nome:"Óleo de Motor 5W30",preco:45,compat:["Fiat Uno","Chevrolet Onix"],icone:"🛢️",info:"Óleo sintético premium.",categoria:"Óleo"},
+  {id:45,nome:"Bateria Carro",preco:350,compat:["Fiat Uno","Chevrolet Onix"],icone:"🔋",info:"Bateria durável para carros.",categoria:"Elétrico"},
+  {id:46,nome:"Correia Dentada",preco:150,compat:["Fiat Uno","Chevrolet Onix"],icone:"⛓️",info:"Correia dentada de alta resistência.",categoria:"Transmissão"},
+  {id:47,nome:"Amortecedor Dianteiro Carro",preco:400,compat:["Fiat Uno","Chevrolet Onix"],icone:"🛠️",info:"Amortecedor dianteiro confiável.",categoria:"Suspensão"},
+  {id:48,nome:"Pneu Dianteiro 185/65",preco:300,compat:["Fiat Uno","Chevrolet Onix"],icone:"🛞",info:"Pneu dianteiro durável.",categoria:"Pneus"},
+  {id:49,nome:"Pneu Traseiro 185/65",preco:300,compat:["Fiat Uno","Chevrolet Onix"],icone:"🛞",info:"Pneu traseiro durável.",categoria:"Pneus"},
+  {id:50,nome:"Espelho Retrovisor Carro",preco:90,compat:["Fiat Uno","Chevrolet Onix"],icone:"🔍",info:"Espelho retrovisor lateral.",categoria:"Acessórios"},
+  {id:51,nome:"Farol Dianteiro Halógeno",preco:250,compat:["Fiat Uno","Chevrolet Onix"],icone:"💡",info:"Farol dianteiro potente.",categoria:"Iluminação"},
+  {id:52,nome:"Lanterna Traseira Carro",preco:180,compat:["Fiat Uno","Chevrolet Onix"],icone:"🔴",info:"Lanterna traseira eficiente.",categoria:"Iluminação"},
+  {id:53,nome:"Filtro de Ar Carro",preco:70,compat:["Fiat Uno","Chevrolet Onix"],icone:"🌬️",info:"Filtro de ar eficiente.",categoria:"Filtros"},
+  {id:54,nome:"Suporte de Placa Carro",preco:40,compat:["Fiat Uno","Chevrolet Onix"],icone:"🪧",info:"Suporte para placa resistente.",categoria:"Acessórios"},
+  {id:55,nome:"Buzina Carro",preco:60,compat:["Fiat Uno","Chevrolet Onix"],icone:"📢",info:"Buzina potente.",categoria:"Elétrico"},
+  {id:56,nome:"Pastilha de Freio Traseira Carro",preco:130,compat:["Fiat Uno","Chevrolet Onix"],icone:"🛑",info:"Pastilha traseira de qualidade.",categoria:"Freios"},
+  {id:57,nome:"Cabo de Embreagem Carro",preco:60,compat:["Fiat Uno","Chevrolet Onix"],icone:"🧵",info:"Cabo de embreagem durável.",categoria:"Transmissão"},
+  {id:58,nome:"Filtro de Combustível Carro",preco:55,compat:["Fiat Uno","Chevrolet Onix"],icone:"🛢️",info:"Filtro que protege o motor.",categoria:"Filtros"},
+  {id:59,nome:"Amortecedor Traseiro Carro",preco:420,compat:["Fiat Uno","Chevrolet Onix"],icone:"🛠️",info:"Amortecedor traseiro resistente.",categoria:"Suspensão"},
+  {id:60,nome:"Cabo de Acelerador Carro",preco:50,compat:["Fiat Uno","Chevrolet Onix"],icone:"🧵",info:"Cabo de acelerador confiável.",categoria:"Motor"},
+  {id:61,nome:"Farol Neblina Carro",preco:180,compat:["Fiat Uno","Chevrolet Onix"],icone:"💡",info:"Farol de neblina LED.",categoria:"Iluminação"},
+  {id:62,nome:"Interruptor de Luz Carro",preco:60,compat:["Fiat Uno","Chevrolet Onix"],icone:"🔌",info:"Interruptor confiável.",categoria:"Elétrico"},
+  {id:63,nome:"Filtro de Óleo Premium Carro",preco:85,compat:["Fiat Uno","Chevrolet Onix"],icone:"🛢️",info:"Filtro premium de óleo.",categoria:"Filtros"},
+  {id:64,nome:"Velas de Ignição Premium Carro",preco:75,compat:["Fiat Uno","Chevrolet Onix"],icone:"⚡",info:"Velas de alto desempenho.",categoria:"Motor"},
+  {id:65,nome:"Kit Pastilhas de Freio",preco:220,compat:["Fiat Uno","Chevrolet Onix"],icone:"🛑",info:"Kit completo de pastilhas.",categoria:"Freios"},
+  {id:66,nome:"Bateria Selada Carro",preco:380,compat:["Fiat Uno","Chevrolet Onix"],icone:"🔋",info:"Bateria sem manutenção.",categoria:"Elétrico"},
+  {id:67,nome:"Pneu Dianteiro 195/65",preco:320,compat:["Fiat Uno","Chevrolet Onix"],icone:"🛞",info:"Pneu dianteiro de qualidade.",categoria:"Pneus"},
+  {id:68,nome:"Pneu Traseiro 195/65",preco:320,compat:["Fiat Uno","Chevrolet Onix"],icone:"🛞",info:"Pneu traseiro durável.",categoria:"Pneus"},
+  {id:69,nome:"Espelho Retrovisor Direito Carro",preco:100,compat:["Fiat Uno","Chevrolet Onix"],icone:"🔍",info:"Espelho direito resistente.",categoria:"Acessórios"},
+  {id:70,nome:"Espelho Retrovisor Esquerdo Carro",preco:100,compat:["Fiat Uno","Chevrolet Onix"],icone:"🔍",info:"Espelho esquerdo resistente.",categoria:"Acessórios"},
+  {id:71,nome:"Carenagem Frontal Carro",preco:200,compat:["Fiat Uno","Chevrolet Onix"],icone:"🛡️",info:"Carenagem frontal durável.",categoria:"Acessórios"},
+  {id:72,nome:"Carenagem Lateral Carro",preco:190,compat:["Fiat Uno","Chevrolet Onix"],icone:"🛡️",info:"Carenagem lateral resistente.",categoria:"Acessórios"},
+  {id:73,nome:"Kit Relação Completo Carro",preco:250,compat:["Fiat Uno","Chevrolet Onix"],icone:"⛓️",info:"Correia, tensionador e polia.",categoria:"Transmissão"},
+  {id:74,nome:"Filtro de Ar Esportivo Carro",preco:95,compat:["Fiat Uno","Chevrolet Onix"],icone:"🌬️",info:"Filtro de ar esportivo.",categoria:"Filtros"},
+  {id:75,nome:"Cabo de Freio Carro",preco:60,compat:["Fiat Uno","Chevrolet Onix"],icone:"🧵",info:"Cabo resistente.",categoria:"Freios"},
+  {id:76,nome:"Pastilha de Freio Esportiva",preco:250,compat:["Fiat Uno","Chevrolet Onix"],icone:"🛑",info:"Pastilha de freio esportiva.",categoria:"Freios"},
+  {id:77,nome:"Amortecedor Esportivo",preco:450,compat:["Fiat Uno","Chevrolet Onix"],icone:"🛠️",info:"Amortecedor de performance.",categoria:"Suspensão"},
+  {id:78,nome:"Lanterna Traseira LED",preco:200,compat:["Fiat Uno","Chevrolet Onix"],icone:"🔴",info:"Lanterna traseira LED.",categoria:"Iluminação"},
+  {id:79,nome:"Filtro de Combustível Premium",preco:80,compat:["Fiat Uno","Chevrolet Onix"],icone:"🛢️",info:"Filtro premium.",categoria:"Filtros"},
+  {id:80,nome:"Cabo de Velas",preco:55,compat:["Fiat Uno","Chevrolet Onix"],icone:"⚡",info:"Cabo de ignição de qualidade.",categoria:"Motor"}
+];
+
+const categorias=[...new Set(produtos.map(p=>p.categoria))];
+
+function init(){
+  const container=document.getElementById("produtos-container");
+  const listaCategorias=document.getElementById("categorias-lista");
+  
+  categorias.forEach(cat=>{
+    const li=document.createElement("li");
+    li.textContent=cat;
+    li.onclick=()=>filtrar(cat);
+    listaCategorias.appendChild(li);
+    
+    const titulo=document.createElement("div");
+    titulo.className="categoria-title";
+    titulo.textContent=cat;
+    container.appendChild(titulo);
+    
+    const divCat=document.createElement("div");
+    divCat.className="produtos";
+    divCat.id="cat-"+cat.replace(/\s/g,'');
+    container.appendChild(divCat);
+  });
+  
+  produtos.forEach(prod=>{
+    const div=document.createElement("div");
+    div.className="card";
+    div.innerHTML=`
+      <div class="card-inner">
+        <div class="card-front">
+          ${prod.badge?`<div class="badge ${prod.badge}">${prod.badge.toUpperCase()}</div>`:""}
+          <div class="icone-cat">${prod.icone}</div>
+          <h3>${prod.nome}</h3>
+          <div class="preco">R$ ${prod.preco.toFixed(2)}</div>
+          <div class="compatibilidade">${prod.compat.join(", ")}</div>
+        </div>
+        <div class="card-back tooltip">
+          ${prod.info}
+          <span class="tooltiptext">Clique para adicionar ao carrinho</span>
+        </div>
+      </div>`;
+    div.onclick=()=>adicionarCarrinho(prod);
+    document.getElementById("cat-"+prod.categoria.replace(/\s/g,'')).appendChild(div);
+    
+    setTimeout(()=>{div.style.animation="fadeInUp 0.5s forwards";},100);
+  });
+}
+
+function filtrar(cat){
+  categorias.forEach(c=>{
+    const div=document.getElementById("cat-"+c.replace(/\s/g,''));
+    div.style.display=c===cat?"grid":"none";
+  });
+}
+
+function pesquisar(){
+  const termo=document.getElementById("search").value.toLowerCase();
+  produtos.forEach(p=>{
+    const div=document.querySelector(`#cat-${p.categoria.replace(/\s/g,'')} .card:nth-child(${produtos.indexOf(p)+1})`);
+    if(p.nome.toLowerCase().includes(termo)){
+      div.style.display="block";
+    }else{
+      div.style.display="none";
+    }
+  });
+}
+
+function adicionarCarrinho(prod){
+  carrinho.push(prod);
+  total+=prod.preco;
+  renderCarrinho();
+  alert(prod.nome+" adicionado ao carrinho!");
+}
+
+function renderCarrinho(){
+  const lista=document.getElementById("lista");
+  lista.innerHTML="";
+  carrinho.forEach((p,i)=>{
+    const li=document.createElement("li");
+    li.textContent=`${p.nome} - R$ ${p.preco.toFixed(2)}`;
+    lista.appendChild(li);
+  });
+  document.getElementById("total").textContent=total.toFixed(2);
+}
+
+function finalizar(){
+  if(carrinho.length===0){alert("Carrinho vazio!");return;}
+  alert("Compra finalizada!\nTotal: R$ "+total.toFixed(2));
+  carrinho=[]; total=0;
+  renderCarrinho();
+}
+
+function abrirModal(prod){
+  document.getElementById("modal-title").textContent=prod.nome;
+  document.getElementById("modal-text").textContent=prod.info;
+  document.getElementById("modal").style.display="flex";
+}
+
+function fecharModal(){document.getElementById("modal").style.display="none";}
+
+init();
+</script>
+
+</body>
+</html>
